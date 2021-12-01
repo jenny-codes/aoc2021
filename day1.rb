@@ -1,9 +1,19 @@
-read_input = ->(file_path) { File.read(file_path).split().map(&:to_i) }
+# =========================
+# IO Utils
+
+read_input   = ->(file_path) { File.read(file_path).split().map(&:to_i) }
+print_output = ->(output, label) { puts "#{label}: #{output}" }
+
+
+# =========================
+# Main funs
 
 p1 = ->(input) { (1...(input.count)).count { |n| input[n-1] < input[n] } }
 p2 = ->(input) { (3...(input.count)).count { |n| input[n-3] < input[n] } }
 
-print_output = ->(output, label) { puts "#{label}: #{output}" }
+
+# =========================
+# Execution
 
 input = read_input['data/day1.txt']
 
