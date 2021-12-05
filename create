@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Generate code file from template
+sed "s/\[NUM\]/$1/" template.rb > "day$1.rb"
+
+# Create input file
+touch "data/day$1.txt"
+
+echo "Generated files for day $1"
