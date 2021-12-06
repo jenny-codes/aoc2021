@@ -1,36 +1,20 @@
 # frozen_string_literal: true
 
-require './lib/pipe'
+require './runner'
 
 # ===========================================
-# Main functions
+# Runner
 
-do_puzzle1 = ->(input) {
-  input
-}
+class DayNUMBER < Runner
+  def do_puzzle1
+    'Not yet implemented'
+  end
 
-do_puzzle2 = ->(_input) {
-  'Not yet implemented'
-}
+  def do_puzzle2
+    'Not yet implemented'
+  end
 
-# ===========================================
-# Adapter
-
-parse = ->(input) {
-  input
-}
-
-# ===========================================
-# IO Utils
-
-read_input = ->(file_path) {
-  File.readlines(file_path).map(&:strip)
-}
-
-print_output = ->(label) { ->(output) { puts "#{label}: #{output}" } }
-
-# ===========================================
-# Execution
-
-Pipe['data/day[NUM].txt'][read_input][parse][do_puzzle1][print_output['puzzle 1']].run
-Pipe['data/day[NUM].txt'][read_input][parse][do_puzzle2][print_output['puzzle 2']].run
+  def parse(raw_input)
+    raw_input
+  end
+end
