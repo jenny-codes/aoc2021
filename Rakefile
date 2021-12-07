@@ -25,6 +25,7 @@ end
 # =========================================
 # Main tasks
 
+desc 'Run the code for the day'
 task :run, [:source_code_path] do |_t, args|
   raw_input = read_input(args.source_code_path)
   runner = fetch_runner(args.source_code_path).new(raw_input)
@@ -36,14 +37,17 @@ task :run, [:source_code_path] do |_t, args|
   print_output('puzzle 2', output2)
 end
 
+desc 'Setup files for the day'
 task :create, [:day] do |_t, args|
-  name = "day#{args.day}"
+  source_code_path = "day#{args.day}.rb"
+  input_path = "data/day#{args.day}.txt"
 
-  # Create new source code file
-  `sed s/NUMBER/#{args.day}/ template.rb > #{name}.rb`
+  # Create a new source code file
+  `sed s/NUMBER/#{args.day}/ template.rb > #{source_code_path}`
 
-  # Create new input file
-  FileUtils.touch("./data/#{name}.txt")
+  # Create a new input file
+  token = ENV['AOC_SESSION_TOKEN']
+  `curl --header 'cookie: session=#{token}' -o #{input_path} https://adventofcode.com/2021/day/#{args.day}/input`
 
-  puts "Generated files for #{name} 🧑‍🎄"
+  puts "Generated files for day #{args.day} 🧑‍🎄"
 end
