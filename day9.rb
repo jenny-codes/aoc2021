@@ -2,7 +2,15 @@
 
 require './runner'
 
-Point = Struct.new(:position, :value) do
+Point = Struct.new(:position, :value, :is_traversed) do
+  def marked?
+    value == 9 || is_traversed
+  end
+
+  def mark
+    self.is_traversed = true
+  end
+
   def valid?
     x, y = position
     x >= 0 && y >= 0
@@ -10,7 +18,7 @@ Point = Struct.new(:position, :value) do
 end
 
 Line = Struct.new(:points) do
-  def low_points
+  def low_points_in_line
     direction = :desc
     result = []
     points.each_cons(2) do |pair|
@@ -30,12 +38,31 @@ class Board
   def initialize(input)
     @data = input.each_with_index.map do |row, y_idx|
       row.split('').map(&:to_i).each_with_index.map do |val, x_idx|
-        Point.new([x_idx, y_idx], val)
+        Point.new([x_idx, y_idx], val, false)
       end
     end
     @x_boundry = @data[0].count - 1
     @y_boundry = @data.count - 1
   end
+
+  def low_points
+    rows = each_row { |row| Line.new(row).low_points_in_line }.flatten
+    cols = each_col { |col| Line.new(col).low_points_in_line }.flatten
+    rows & cols
+  end
+
+  def calculate_basins
+    low_points.map { |point| count_neigbors(point) }
+  end
+
+  def count_neigbors(point)
+    return 0 if point.marked?
+
+    point.mark
+    1 + neighbors_for(point).sum { |n| count_neigbors(n) }
+  end
+
+  private
 
   def each_row(&block)
     @data.map(&block)
@@ -45,17 +72,13 @@ class Board
     @data.transpose.map(&block)
   end
 
-  def all_points
-    @data.flatten
-  end
-
   def neighbors_for(point)
     x, y = point.position
 
-    right = @data[y][x + 1] if x < @x_boundry
-    left = @data[y][x - 1] if x > 0
     up = @data[y + 1][x] if y < @y_boundry
+    right = @data[y][x + 1] if x < @x_boundry
     down = @data[y - 1][x] if y > 0
+    left = @data[y][x - 1] if x > 0
 
     [right, left, up, down].compact
   end
@@ -66,28 +89,12 @@ end
 
 class Day9 < Runner
   def do_puzzle1
-    board = Board.new(@input)
-    rows = board.each_row { |row| Line.new(row).low_points }.flatten
-    cols = board.each_col { |col| Line.new(col).low_points }.flatten
-    (rows & cols).sum { |point| point.value + 1 }
+    Board.new(@input).low_points.sum { |point| point.value + 1 }
   end
 
   def do_puzzle2
-    board = Board.new(@input)
-    rem = board.all_points
-    basins = []
-    basins << count_neigbors(board, rem, rem[0]) while rem.any?
+    basins = Board.new(@input).calculate_basins
     basins.sort.last(3).reduce(&:*)
-  end
-
-  def count_neigbors(board, rem, current_point)
-    return 0 unless current_point.valid?
-    return 0 unless rem.delete(current_point)
-    return 0 if current_point.value == 9
-
-    1 + board.neighbors_for(current_point).sum do |n|
-      count_neigbors(board, rem, n)
-    end
   end
 
   def parse(raw_input)
