@@ -37,16 +37,16 @@ task :run, [:source_code_path] do |_t, args|
   print_output('puzzle 2', output2)
 end
 
-desc 'Setup files for the day'
+desc 'Setup files for the day. Need AOC_SESSION_TOKEN env var.'
 task :create, [:day] do |_t, args|
-  source_code_path = "day#{args.day}.rb"
-  input_path = "data/day#{args.day}.txt"
+  token = ENV.fetch('AOC_SESSION_TOKEN')
 
-  # Create a new source code file
-  `sed s/NUMBER/#{args.day}/ template.rb > #{source_code_path}`
+  # If one doesn't already exist, create a source code file
+  source_code_path = "day#{args.day}.rb"
+  `sed s/NUMBER/#{args.day}/ template.rb > #{source_code_path}` unless File.exist?(source_code_path)
 
   # Create a new input file
-  token = ENV['AOC_SESSION_TOKEN']
+  input_path = "data/day#{args.day}.txt"
   `curl --header 'cookie: session=#{token}' -o #{input_path} https://adventofcode.com/2021/day/#{args.day}/input`
 
   puts "Generated files for day #{args.day} 🧑‍🎄"
