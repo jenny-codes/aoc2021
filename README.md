@@ -2,12 +2,12 @@
 
 Solutions for https://adventofcode.com/2021.
 
-All the puzzles are solved with Ruby.
+All the puzzles are solved with Ruby 💎
 
 ## Some automated tasks
 
-There are two tasks defined in Rakefile: `setup` and `run`.
-- `rake setup [day_num]`
+There are two tasks defined in Rakefile: `start` and `run`.
+- `rake start [day_num]`
   - Create a new file from template.rb for the day.
   - Download the input file into data/ directory.
   - If no argument is provided, `day_num` defaults to the current day.

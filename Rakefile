@@ -16,9 +16,9 @@ task :run, [:source_code_path] do |_t, args|
 end
 
 desc 'Setup files for the day. Need AOC_SESSION_TOKEN env var.'
-task :setup do
+task :start, [:day_num] do |_t, args|
   token = ENV.fetch('AOC_SESSION_TOKEN')
-  day_num = Time.now.day
+  day_num = args.day_num || Time.now.day
 
   # If one doesn't already exist, create a source code file
   source_code_path = "day#{day_num}.rb"
