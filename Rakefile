@@ -29,6 +29,7 @@ task :setup do
   `curl --header 'cookie: session=#{token}' -o #{input_path} https://adventofcode.com/2021/day/#{day_num}/input`
 
   puts "Generated files for day #{day_num} 🧑‍🎄"
+  `open https://adventofcode.com/2021/day/#{day_num}`
 end
 
 # =========================================
