@@ -5,21 +5,26 @@ Solutions for https://adventofcode.com/2021.
 All the puzzles are solved with Ruby 💎
 
 ## Running time
-Testing with shell command `time`. This displays the `total` time.
 
-(unit: second)
-- Day 1: 0.180
-- Day 2: 0.149
-- Day 3: 0.151
-- Day 4: 0.155
-- Day 5: 0.480
-- Day 6: 0.149
-- Day 7: 0.325
-- Day 8: 0.166
-- Day 9: 0.172
+This is just to get a rough idea of how the code performs.
+
+The numbers are the `total` reading from running `time` command on my local machine (a regular MacBook Air).
+
+Unit is second.
+
+- Day  1: 0.180
+- Day  2: 0.149
+- Day  3: 0.151
+- Day  4: 0.155
+- Day  5: 0.480
+- Day  6: 0.149
+- Day  7: 0.325
+- Day  8: 0.166
+- Day  9: 0.172
 - Day 10: 0.151
 - Day 11: 0.301
 - Day 12: 1.036
+- Day 13: 0.199
 
 
 ## Some automated tasks
