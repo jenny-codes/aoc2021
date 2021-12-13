@@ -2,12 +2,9 @@
 
 require './runner'
 
-# ===========================================
-# Runner
-
 class DayNUMBER < Runner
   def do_puzzle1
-    'Not yet implemented'
+    @input
   end
 
   def do_puzzle2
