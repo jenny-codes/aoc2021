@@ -2,32 +2,33 @@
 
 require './runner'
 
-MAX_INT = (2**(0.size * 8 - 2) - 1)
-
 Node = Struct.new(:value, :acc)
 
-# Didn't end up using this struct. May revisist once I figure out where the performance bottleneck is.
-# Point = Struct.new(:x, :y) do
-#   def neighbors
-#     [
-#       Point.new(x - 1, y),
-#       Point.new(x + 1, y),
-#       Point.new(x, y - 1),
-#       Point.new(x, y + 1)
-#     ]
-#   end
-# end
-
-Board = Struct.new(:nodes) do
-  def update(current_node, next_node, next_point)
-    new_next_node = Node.new(next_node.value, [next_node.acc, current_node.acc + next_node.value].min)
-    nodes[next_point] = new_next_node
+Board = Struct.new(:nodes, :queue) do
+  def update_neighbors(current_point, current_node)
+    x, y = current_point
+    [
+      [x - 1, y],
+      [x + 1, y],
+      [x, y - 1],
+      [x, y + 1]
+    ].filter_map do |p|
+      existing_node = queue[p]
+      if existing_node
+        queue[p] = Node.new(existing_node.value,
+                            [existing_node.acc, current_node.acc + existing_node.value].min)
+      elsif nodes.key?(p)
+        new_node = nodes.delete(p)
+        queue[p] = Node.new(new_node.value,
+                            current_node.acc + new_node.value)
+      end
+    end
   end
 
   def delete(point)
-    raise "Cannot find #{point} in nodes. Perhaps your brain does not work?" unless nodes[point]
+    node = queue.delete(point)
+    raise "Cannot find #{point} in queue. Perhaps your brain does not work?" unless node
 
-    nodes.delete(point)
     self
   end
 
@@ -53,7 +54,7 @@ Board = Struct.new(:nodes) do
   end
 
   def min_by_acc
-    nodes.min_by { |_point, node| node.acc }
+    queue.min_by { |_point, node| node.acc }
   end
 
   def debug_print_first_column
@@ -65,31 +66,30 @@ end
 
 class Day15 < Runner
   def do_puzzle1
-    board = Board.new(@input)
+    board = Board.new(@input, {})
     starting_pos = [0, 0]
-
+    starting_node = Node.new(0, 0)
     target = [board.x_bound, board.y_bound]
-    find_shortest_path(board.delete(starting_pos), starting_pos, Node.new(0, 0), target)
+
+    find_shortest_path(board, starting_pos, starting_node, target)
   end
 
   def do_puzzle2
-    board = Board.new(make_it_scarier(@input))
+    board = Board.new(make_it_scarier(@input), {})
     starting_pos = [0, 0]
+    starting_node = Node.new(0, 0)
     target = [board.x_bound, board.y_bound]
-    find_shortest_path(board.delete(starting_pos), starting_pos, Node.new(0, 0), target)
+
+    find_shortest_path(board, starting_pos, starting_node, target)
   end
 
   # Implementing Dijkstra algorithm
-  def find_shortest_path(remaining_board, current_point, current_node, target)
+  # https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Practical_optimizations_and_infinite_graphs
+  def find_shortest_path(board, current_point, current_node, target)
     until current_point == target
-      puts remaining_board.nodes.count
-      remaining_board.valid_neighbors_for(current_point).each do |point_node|
-        next_point, next_node = point_node
-        remaining_board.update(current_node, next_node, next_point)
-      end
-
-      current_point, current_node = remaining_board.min_by_acc
-      remaining_board.delete(current_point)
+      board.update_neighbors(current_point, current_node)
+      current_point, current_node = board.min_by_acc
+      board.delete(current_point)
     end
     current_node.acc
   end
@@ -118,7 +118,7 @@ class Day15 < Runner
       y.split('').each_with_index do |val, x_idx|
         raise "One of #{x_idx}, #{y_idx}, #{val} is nil" unless val && x_idx && y_idx
 
-        board[[x_idx, y_idx]] = Node.new(val.to_i, MAX_INT)
+        board[[x_idx, y_idx]] = Node.new(val.to_i, nil)
       end
       board
     end
