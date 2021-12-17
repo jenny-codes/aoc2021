@@ -27,6 +27,7 @@ Unit is second.
 - Day 13: 0.199
 - Day 14: 0.179
 - Day 15: 4299 -> 11.98
+- Day 16: 0.169
 
 
 ## Some automated tasks
