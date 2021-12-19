@@ -10,6 +10,10 @@ class Pipe
     new([x])
   end
 
+  def self.run(data)
+    data
+  end
+
   def initialize(args)
     @args = args
   end
@@ -18,7 +22,11 @@ class Pipe
     self.class.new(@args << x)
   end
 
-  def run
-    @args.reduce { |memo, arg| arg.call(memo) }
+  def run(data = nil)
+    if data
+      (Array[data] + @args).reduce { |memo, arg| arg.call(memo) }
+    else
+      @args.reduce { |memo, arg| arg.call(memo) }
+    end
   end
 end
