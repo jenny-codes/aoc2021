@@ -31,8 +31,8 @@ Unit is second.
 - Day 17: 0.181
 - Day 18: 1.838
 - Day 19: 1.827
-
-
+- Day 20: 10.853
+- Day 21: 0.288
 
 ## Some automated tasks
 
