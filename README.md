@@ -34,6 +34,7 @@ Unit is second.
 - Day 20: 10.853
 - Day 21: 0.288
 - Day 22: 5.872
+- Day 24: 3.529
 
 ## Some automated tasks
 
